@@ -1,35 +1,40 @@
-// Import necessary Flutter and Dart packages
 import 'package:flutter/material.dart';
-import 'screens/login_signup_page.dart'; // Import the login/signup page
+import 'screens/login_signup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
-// The starting point of the application
 Future<void> main() async {
+  // This line ensures that all Flutter widgets have a chance to instantiate
   WidgetsFlutterBinding.ensureInitialized();
+
+  // This line initializes Firebase in the app
   await Firebase.initializeApp();
 
+  // This line is offloads the computationally heavy operation in a background.
   final result = await compute(heavyComputation, "Flutter");
   print(result);
 
+  // This line builds and runs the application widget tree
   runApp(const MyApp());
 }
 
+// Test function for heavy operations
 String heavyComputation(String value) {
-  // Perform your heavy task here. For instance, a large loop
+  // A place holder for heavy operations
   return "Completed";
 }
 
 // This widget is the root of your application.
 class MyApp extends StatelessWidget {
+  // A constructor may have optional parameters. Key is one of them used by Flutter.
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo', // The title of your application
+      title: 'Simple Reads!', // The title of application
       theme: ThemeData(
-        // This is the theme of your application.
+        // Theme of application
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
