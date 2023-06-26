@@ -1,5 +1,7 @@
 # Book App
 
+This app is similar to good reads.
+
 This is a simple book management application built using Flutter. It uses Firebase for both authentication and database services.
 
 ## Features
@@ -16,8 +18,8 @@ This application provides the following screens:
 
 ## Technologies Used
 
-- **Flutter**: 
-- **Dart**: 
+- **Flutter** 
+- **Dart** 
 - **Firebase Authentication**: Used for handling user authentication.
 - **Firestore**: A flexible, scalable database for mobile, web, and server development from Firebase.
 
