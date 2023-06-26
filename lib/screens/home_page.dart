@@ -25,9 +25,9 @@ class HomePage extends StatelessWidget {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data() as Map<String, dynamic>;
               return new ListTile(
-                title: new Text(data['title']),
-                subtitle: new Text(data['author']),
-                leading: (data['imageUrl'] != null)
+                title: new Text(data['title'] is String ? data['title'] : "N/A"),
+                subtitle: new Text(data['author'] is String ? data['author'] : "N/A"),
+                leading: (data['imageUrl'] is String)
                     ? Image.network(data['imageUrl'])
                     : null,
               );
@@ -35,29 +35,17 @@ class HomePage extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to AddBookPage when floating action button is pressed
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddBookPage()),
-          );
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-}
-
-class AddBookPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Add New Book"),
-      ),
-      // Add your AddBookPage implementation here
+      // Commented out the floating action button as it's not yet implemented
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => AddBookPage()),
+      //     );
+      //   },
+      //   child: Icon(Icons.add),
+      //   backgroundColor: Colors.green,
+      // ),
     );
   }
 }
