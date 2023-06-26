@@ -1,10 +1,23 @@
 // Import necessary Flutter and Dart packages
 import 'package:flutter/material.dart';
 import 'screens/login_signup_page.dart'; // Import the login/signup page
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 
 // The starting point of the application
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  final result = await compute(heavyComputation, "Flutter");
+  print(result);
+
   runApp(const MyApp());
+}
+
+String heavyComputation(String value) {
+  // Perform your heavy task here. For instance, a large loop
+  return "Completed";
 }
 
 // This widget is the root of your application.

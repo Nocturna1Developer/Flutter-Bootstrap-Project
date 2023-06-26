@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_simple_app/screens/home_page.dart';
 
+enum AuthMode { LOGIN, SIGNUP }
 
 class LoginSignupPage extends StatefulWidget {
   @override
@@ -10,14 +10,16 @@ class LoginSignupPage extends StatefulWidget {
 }
 
 class _LoginSignupPageState extends State<LoginSignupPage> {
+  final _auth = FirebaseAuth.instance;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  AuthMode _authMode = AuthMode.LOGIN;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login/Signup Page"),
+        title: Text(_authMode == AuthMode.LOGIN ? "Login" : "Signup"),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -34,13 +36,21 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               obscureText: true,
             ),
             SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () => _login(),
-              child: Text("Login"),
-            ),
-            ElevatedButton(
-              onPressed: () => _signInWithGoogle(),
-              child: Text("Sign in with Google"),
+            if (_authMode == AuthMode.LOGIN)
+              ElevatedButton(
+                onPressed: () => _login(),
+                child: Text("Login"),
+              ),
+            if (_authMode == AuthMode.SIGNUP)
+              ElevatedButton(
+                onPressed: () => _signup(),
+                child: Text("Sign up"),
+              ),
+            TextButton(
+              child: Text(_authMode == AuthMode.LOGIN
+                  ? 'Create Account'
+                  : 'Already have an account? Login'),
+              onPressed: _switchAuthMode,
             ),
           ],
         ),
@@ -48,11 +58,18 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     );
   }
 
+  void _switchAuthMode() {
+    setState(() {
+      _authMode =
+      _authMode == AuthMode.LOGIN ? AuthMode.SIGNUP : AuthMode.LOGIN;
+    });
+  }
+
   void _login() async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
       );
 
       Navigator.pushReplacement(
@@ -64,29 +81,19 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     }
   }
 
-  void _signInWithGoogle() async {
+  void _signup() async {
     try {
-      UserCredential userCredential = await signInWithGoogle();
-      print(userCredential);
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
       );
-    } catch(e) {
+    } on FirebaseAuthException catch (e) {
       // Handle exceptions as necessary
     }
-  }
-
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }
