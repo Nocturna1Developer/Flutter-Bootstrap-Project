@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Define a StatefulWidget for the add book page
+
 class AddBookPage extends StatefulWidget {
   @override
   _AddBookPageState createState() => _AddBookPageState();
 }
 
 class _AddBookPageState extends State<AddBookPage> {
-  // Define a CollectionReference to the 'books' collection in Firestore
   final CollectionReference books = FirebaseFirestore.instance.collection('books');
-
-  // Define a GlobalKey to uniquely identify the Form widget and allow for validation
   final _formKey = GlobalKey<FormState>();
 
-  // Define variables to hold the input values
   String _title = '';
   String _author = '';
   String _genre = '';
@@ -24,32 +20,64 @@ class _AddBookPageState extends State<AddBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add New Book"), // The title of the AppBar
+        title: Text("Add New Book"),
       ),
       body: Form(
-        key: _formKey, // Assign the GlobalKey to the Form
+        key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.all(8.0), // Add padding to all sides
+          padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: <Widget>[
-              // TextFormFields for each input, with validation and onSaved functions
               TextFormField(
                 decoration: InputDecoration(labelText: 'Book Title'),
-                validator: (value) { // Check that a value has been provided
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter book title';
                   }
                   return null;
                 },
-                onSaved: (value) { // Save the input value to _title
+                onSaved: (value) {
                   _title = value!;
                 },
               ),
-
-              // An ElevatedButton to save the book
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Author'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter author';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _author = value!;
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Genre'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter genre';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _genre = value!;
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Image URL'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter image URL';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _imageUrl = value!;
+                },
+              ),
               ElevatedButton(
                 onPressed: () {
-                  // Check if all validators return null, then save the input values
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     // Save data to Firestore
@@ -59,7 +87,7 @@ class _AddBookPageState extends State<AddBookPage> {
                       'genre': _genre,
                       'imageUrl': _imageUrl,
                     }).then((value) {
-                      Navigator.pop(context); // Pop the page from the navigation stack
+                      Navigator.pop(context);
                     }).catchError((error) {
                       print("Failed to add book: $error");
                     });
